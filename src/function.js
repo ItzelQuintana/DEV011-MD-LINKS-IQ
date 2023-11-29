@@ -6,7 +6,10 @@ const absolutePath = (route) => path.resolve(route);
 
 const validar = (route) => fs.existsSync(route);
 
-const obtenerEnlacesMarkdown = (filePath) => {
+
+//Extraer enlances de un archivo
+
+const extractLinks = (filePath) => {
   return new Promise((resolve, reject) => {
     fs.readFile(filePath, "utf-8", (err, data) => {
       if (err) {
@@ -46,4 +49,4 @@ const validateLinks = (link) => {
   });
 })};
 
-module.exports = { absolutePath, validar, obtenerEnlacesMarkdown, validateLinks };
+module.exports = { absolutePath, validar, extractLinks, validateLinks };

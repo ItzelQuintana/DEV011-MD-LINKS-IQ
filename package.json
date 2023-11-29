@@ -19,10 +19,8 @@
     "doc": "docs",
     "test": "test"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "jest --coverage"
-
   },
   "repository": {
     "type": "git",
