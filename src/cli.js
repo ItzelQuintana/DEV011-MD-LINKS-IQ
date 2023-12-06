@@ -1,10 +1,10 @@
-const mdLinksModule = require("./index.js"); // Asegúrate de especificar la ruta correcta al archivo
+const { mdLinks } = require('./functions');
 
-const mdLinksFunction = mdLinksModule().mdLinks('README.md');
+const filePath = 'README.md';
 
-mdLinksFunction
-  .then(data => {
-    console.log(data);
+mdLinks(filePath)
+  .then(links => {
+    console.log(links);
   })
   .catch(error => {
     console.error(error);
