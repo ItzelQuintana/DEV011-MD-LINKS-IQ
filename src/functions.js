@@ -66,4 +66,4 @@ function validateLink(link) {
     });
 }
 
-module.exports = mdLinks;
+module.exports = { mdLinks, extractLinks, validateLinks, validateLink};

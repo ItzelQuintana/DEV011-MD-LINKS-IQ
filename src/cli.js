@@ -1,4 +1,4 @@
-const mdLinks = require('./functions');
+const {mdLinks} = require('./functions');
 const filePath = 'README.md';
 const validate = true;
 
