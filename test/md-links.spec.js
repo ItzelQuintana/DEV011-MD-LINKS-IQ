@@ -3,11 +3,7 @@
 const { mdLinks, extractLinks, validateLinks, validateLink } = require('../src/functions');
 const fs = require('fs').promises;
 const path = require('path');
-// const axios = require('axios');
-// const MockAdapter = require('axios-mock-adapter');
 
-// Configura el adaptador de axios
-// const mockAxios = new MockAdapter(axios);
 
 describe('extractLinks', () => {
   it('should extract links from given data and file path', () => {
@@ -45,7 +41,7 @@ describe('extractLinks', () => {
     expect(result).toEqual([]);
   });
 
-  // Puedes agregar más casos de prueba según sea necesario
+  
 });
 
 describe('validateLinks', () => {
@@ -86,9 +82,14 @@ describe('validateLinks', () => {
     });
   });
 
-  // Puedes agregar más casos de prueba según sea necesario
+  
 });
 
+// const axios = require('axios');
+// const MockAdapter = require('axios-mock-adapter');
+
+// Configura el adaptador de axios
+// const mockAxios = new MockAdapter(axios);
 
 // // Mock para fs.readFile
 // jest.mock('fs').promises;
@@ -152,5 +153,5 @@ describe('validateLinks', () => {
 //     });
 //   });
 
-//   // Puedes agregar más casos de prueba según sea necesario
+//   
 // });

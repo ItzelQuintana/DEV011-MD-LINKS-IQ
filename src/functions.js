@@ -37,33 +37,44 @@ function extractLinks(data, filePath) {
   return links;
 }
 
-function validateLinks(links) {
-  const promises = links.map(link => validateLink(link));
-  return Promise.all(promises);
-}
+function validateLinks (links) {
+  const linkPromises = links.map((link) => {
+    return axios.head(link.href)
+      .then((response) => {
+        link.status = response.status;
+        link.ok = response.status >= 200 && response.status < 300 ? 'ok' : 'fail';
+        return link;
+      })
+      .catch((error) => {
+        link.status = error.response ? error.response.status : "N/A";
+        link.ok = 'fail';
+        return link;
+      });
+  });
+  return Promise.all(linkPromises)
+};
 
-function validateLink(link) {
-  return axios.head(link.href)
-    .then(response => {
-      const status = response.status;
-      const ok = status >= 200 && status < 300 ? 'ok' : 'fail';
+// function stats(links) {
+//   const totalLinks = links.length;
+//   const uniqueLinks = countUniqueLinks(links);
 
-      return {
-        ...link,
-        status,
-        ok,
-      };
-    })
-    .catch(error => {
-      const status = error.response ? error.response.status : 404;
-      const ok = 'fail';
+//   return `Total links: ${totalLinks}\nUnique links: ${uniqueLinks}`;
+// }
 
-      return {
-        ...link,
-        status,
-        ok,
-      };
-    });
-}
+// function countUniqueLinks(links) {
+//   const uniqueLinksSet = new Set(links.map(link => link.href));
+//   return uniqueLinksSet.size;
+// }
 
-module.exports = { mdLinks, extractLinks, validateLinks, validateLink};
+function stats (links) {
+  const uniqueLinks = links.filter((link, index) => {
+     return links.indexOf(link) === index;
+  })
+
+    return {
+      Total: links.length,
+      Unique: uniqueLinks.length
+    }
+};
+module.exports = { mdLinks, extractLinks, validateLinks, stats };
+
