@@ -55,15 +55,27 @@ function validateLinks (links) {
 };
 
 function stats(links) {
-  const totalLinks = links.length;
-  const uniqueLinks = countUniqueLinks(links);
-
-  return `Total links: ${totalLinks}\nUnique links: ${uniqueLinks}`;
+  return {
+    Total: links.length,
+    Unique: new Set(links.map(link => link.href)).size,
+  };
 }
 
+//para countUniqueLinks
 function countUniqueLinks(links) {
-  const uniqueLinksSet = new Set(links.map(link => link.href));
-  return uniqueLinksSet.size;
+  return new Set(links.map(link => link.href)).size;
 }
 
-module.exports = { mdLinks, extractLinks, validateLinks, stats };
+function statsWithValidate(validatedLinks) {
+  const { Total, Unique } = stats(validatedLinks);
+
+  return {
+    Total,
+    Unique,
+    Active: validatedLinks.filter(link => link.ok === "ok").length,
+    Broken: validatedLinks.filter(link => link.ok === "fail").length,
+  };
+}
+
+
+module.exports = { mdLinks, extractLinks, validateLinks, stats, statsWithValidate  };
