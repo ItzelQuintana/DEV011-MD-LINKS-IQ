@@ -1,22 +1,16 @@
 
-const { mdLinks, stats, validateLinks } = require('./functions');
+const { mdLinks, stats } = require('./functions');
 const filePath = 'README.md';
 const validate = true;
-const statsOption = true; // Puedes cambiarlo según tus necesidades
+const statsOption = process.argv.includes("--stats");
 
-mdLinks(filePath, validate, statsOption)
+mdLinks(filePath, validate)
   .then(links => {
-    
-    if (validate) {
-      const validatedLinks = validateLinks(links);
-      console.log('\nValidated Links:');
-      console.log(validatedLinks);
-    }
-
     if (statsOption) {
       const statistics = stats(links);
-      console.log('\nStatistics:');
       console.log(statistics);
+    } else {
+      console.log(links);
     }
   })
   .catch(error => {

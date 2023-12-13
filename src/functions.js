@@ -54,27 +54,16 @@ function validateLinks (links) {
   return Promise.all(linkPromises)
 };
 
-// function stats(links) {
-//   const totalLinks = links.length;
-//   const uniqueLinks = countUniqueLinks(links);
+function stats(links) {
+  const totalLinks = links.length;
+  const uniqueLinks = countUniqueLinks(links);
 
-//   return `Total links: ${totalLinks}\nUnique links: ${uniqueLinks}`;
-// }
+  return `Total links: ${totalLinks}\nUnique links: ${uniqueLinks}`;
+}
 
-// function countUniqueLinks(links) {
-//   const uniqueLinksSet = new Set(links.map(link => link.href));
-//   return uniqueLinksSet.size;
-// }
+function countUniqueLinks(links) {
+  const uniqueLinksSet = new Set(links.map(link => link.href));
+  return uniqueLinksSet.size;
+}
 
-function stats (links) {
-  const uniqueLinks = links.filter((link, index) => {
-     return links.indexOf(link) === index;
-  })
-
-    return {
-      Total: links.length,
-      Unique: uniqueLinks.length
-    }
-};
 module.exports = { mdLinks, extractLinks, validateLinks, stats };
-
