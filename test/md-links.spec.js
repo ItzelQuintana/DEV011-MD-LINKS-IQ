@@ -1,29 +1,25 @@
-
-// Importa las funciones necesarias de Jest y tu archivo functions.js
 const { mdLinks, extractLinks, validateLinks, validateLink, stats, statsWithValidate } = require('../src/functions');
 const fs = require('fs').promises;
 const path = require('path');
+const axios = require('axios');
 
 
 describe('extractLinks', () => {
   it('should extract links from given data and file path', () => {
-    // Datos de prueba
+    
     const data = 'Este es un [enlace1](http://example.com) y aquí está otro [enlace2](http://example2.com)';
     const filePath = '/ruta/del/archivo.md';
 
-    // Llama a la función extractLinks
+    
     const result = extractLinks(data, filePath);
-
-    // Verifica el resultado
+    
     expect(result).toBeInstanceOf(Array);
     expect(result).toHaveLength(2);
 
-    // Verifica las propiedades del primer enlace
     expect(result[0]).toHaveProperty('href', 'http://example.com');
     expect(result[0]).toHaveProperty('text', 'enlace1');
     expect(result[0]).toHaveProperty('file', '/ruta/del/archivo.md');
 
-    // Verifica las propiedades del segundo enlace
     expect(result[1]).toHaveProperty('href', 'http://example2.com');
     expect(result[1]).toHaveProperty('text', 'enlace2');
     expect(result[1]).toHaveProperty('file', '/ruta/del/archivo.md');
@@ -34,7 +30,6 @@ describe('extractLinks', () => {
     const data = 'Este es un texto sin enlaces';
     const filePath = '/ruta/del/archivo.md';
 
-    // Llama a la función extractLinks
     const result = extractLinks(data, filePath);
 
     // Verifica que el resultado sea un array vacío
@@ -57,7 +52,7 @@ describe('validateLinks', () => {
       validateLink: jest.fn(link => Promise.resolve({ ...link, status: 200, ok: 'ok' })),
     }));
 
-    // Llama a la función validateLinks
+   
     return validateLinks(links).then(results => {
       // Verifica que el resultado sea un array
       expect(results).toBeInstanceOf(Array);
@@ -123,53 +118,17 @@ describe('statsWithValidate', () => {
   });
 });
 
+it('should handle file reading errors', () => {
+  // Mock fs.readFile para simular un error de lectura de archivo
+  jest.spyOn(fs, 'readFile').mockRejectedValue(new Error('File read error'));
 
-// jest.mock('fs').promises;
+  // Llama a mdLinks con una ruta de archivo inválida
+  return mdLinks('/ruta/inexistente.md', false)
+    .catch(error => {
+      // Verifica que se maneje el error correctamente
+      expect(error.message).toBe('File read error');
+    });
+});
 
-// describe('mdLinks', () => {
-//   afterEach(() => {
-//     jest.clearAllMocks();
-//   });
 
-//   it('debería devolver los enlaces sin validación cuando validate es false o undefined', () => {
-//     const filePath = '/ruta/al/archivo.md';
-//     const fileContent = '[Link1](http://example.com)\n[Link2](http://example2.com)';
-    
-//     // Establecer la implementación manual para fs.promises.readFile
-//     fs.readFile = jest.fn().mockResolvedValue(fileContent);
-
-//     return mdLinks(filePath, false).then(result => {
-//       expect(result).toEqual([
-//         { href: 'http://example.com', text: 'Link1', file: filePath },
-//         { href: 'http://example2.com', text: 'Link2', file: filePath },
-//       ]);
-//       expect(fs.readFile).toHaveBeenCalledWith(path.resolve(filePath), 'utf-8');
-//     });
-//   });
-
-//   it('debería devolver los enlaces con validación cuando validate es true', () => {
-//     const filePath = '/ruta/al/archivo.md';
-//     const fileContent = '[Link1](http://example.com)\n[Link2](http://example2.com)';
-//     const validatedLinks = [
-//       { href: 'http://example.com', text: 'Link1', file: filePath, status: 200, ok: 'ok' },
-//       { href: 'http://example2.com', text: 'Link2', file: filePath, status: 404, ok: 'fail' },
-//     ];
-
-//     // Establecer la implementación manual para fs.promises.readFile y validateLinks
-//     fs.readFile = jest.fn().mockResolvedValue(fileContent);
-//     validateLinks.mockResolvedValue(validatedLinks);
-
-//     return mdLinks(filePath, true).then(result => {
-//       expect(result).toEqual(validatedLinks);
-//       expect(fs.readFile).toHaveBeenCalledWith(path.resolve(filePath), 'utf-8');
-//       expect(validateLinks).toHaveBeenCalledWith([
-//         { href: 'http://example.com', text: 'Link1', file: filePath },
-//         { href: 'http://example2.com', text: 'Link2', file: filePath },
-//       ]);
-//     });
-//   });
-
-//   // Otros casos de prueba...
-
-// });
 
