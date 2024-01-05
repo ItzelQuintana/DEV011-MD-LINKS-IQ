@@ -36,8 +36,7 @@ function extractLinks(data, filePath) {
 
   return links;
 }
-
-function validateLinks (links) {
+function validateLinks(links) {
   const linkPromises = links.map((link) => {
     return axios.head(link.href)
       .then((response) => {
@@ -61,11 +60,6 @@ function stats(links) {
   };
 }
 
-//para countUniqueLinks
-function countUniqueLinks(links) {
-  return new Set(links.map(link => link.href)).size;
-}
-
 function statsWithValidate(validatedLinks) {
   const { Total, Unique } = stats(validatedLinks);
 
@@ -78,4 +72,4 @@ function statsWithValidate(validatedLinks) {
 }
 
 
-module.exports = { mdLinks, extractLinks, validateLinks, stats, statsWithValidate  };
+module.exports = { mdLinks, extractLinks, validateLinks, stats, statsWithValidate };
