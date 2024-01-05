@@ -32,5 +32,10 @@
   "bugs": {
     "url": "https://github.com/ItzelQuintana/DEV011-MD-LINKS-IQ/issues"
   },
-  "homepage": "https://github.com/ItzelQuintana/DEV011-MD-LINKS-IQ#readme"
+  "homepage": "https://github.com/ItzelQuintana/DEV011-MD-LINKS-IQ#readme",
+  
+  "bin": {
+    "md-links": "src/cli.js" 
+  }
+
 }

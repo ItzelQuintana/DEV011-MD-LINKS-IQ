@@ -1,6 +1,6 @@
 
 // Importa las funciones necesarias de Jest y tu archivo functions.js
-const { mdLinks, extractLinks, validateLinks, validateLink } = require('../src/functions');
+const { mdLinks, extractLinks, validateLinks, validateLink, stats, statsWithValidate } = require('../src/functions');
 const fs = require('fs').promises;
 const path = require('path');
 
@@ -85,73 +85,91 @@ describe('validateLinks', () => {
   
 });
 
-// const axios = require('axios');
-// const MockAdapter = require('axios-mock-adapter');
 
-// Configura el adaptador de axios
-// const mockAxios = new MockAdapter(axios);
+describe('stats', () => {
+  it('debería devolver un objeto con las estadísticas correctas', () => {
+    const links = [
+      { href: 'http://example.com', text: 'Link 1', file: '/ruta/archivo.md' },
+      { href: 'http://example.com', text: 'Link 2', file: '/ruta/archivo.md' },
+      { href: 'http://example2.com', text: 'Link 3', file: '/ruta/archivo.md' },
+    ];
 
-// // Mock para fs.readFile
+    const result = stats(links);
+
+    expect(result).toEqual({
+      Total: 3,
+      Unique: 2,
+    });
+  });
+});
+
+
+describe('statsWithValidate', () => {
+  it('debería devolver un objeto con las estadísticas correctas', () => {
+    const validatedLinks = [
+      { href: 'http://example.com', text: 'Link 1', file: '/ruta/archivo.md', ok: 'ok' },
+      { href: 'http://example.com', text: 'Link 2', file: '/ruta/archivo.md', ok: 'ok' },
+      { href: 'http://example2.com', text: 'Link 3', file: '/ruta/archivo.md', ok: 'fail' },
+    ];
+
+    const result = statsWithValidate(validatedLinks);
+
+    expect(result).toEqual({
+      Total: 3,
+      Unique: 2,
+      Active: 2,
+      Broken: 1,
+    });
+  });
+});
+
+
 // jest.mock('fs').promises;
 
 // describe('mdLinks', () => {
-//   it('should handle file read error', () => {
-//     // Datos de prueba
-//     const filePath = '/ruta/del/archivo.md';
-//     const expectedError = new Error('Error de lectura de archivo');
+//   afterEach(() => {
+//     jest.clearAllMocks();
+//   });
 
-//     // Configura el mock para fs.readFile (simula error)
-//     fs.readFile.mockImplementation(() => Promise.reject(expectedError));
+//   it('debería devolver los enlaces sin validación cuando validate es false o undefined', () => {
+//     const filePath = '/ruta/al/archivo.md';
+//     const fileContent = '[Link1](http://example.com)\n[Link2](http://example2.com)';
+    
+//     // Establecer la implementación manual para fs.promises.readFile
+//     fs.readFile = jest.fn().mockResolvedValue(fileContent);
 
-//     // Llama a la función mdLinks
-//     return mdLinks(filePath, false).catch(error => {
-//       // Verifica que la función maneje adecuadamente el error de lectura de archivo
-//       expect(error).toEqual(expectedError);
+//     return mdLinks(filePath, false).then(result => {
+//       expect(result).toEqual([
+//         { href: 'http://example.com', text: 'Link1', file: filePath },
+//         { href: 'http://example2.com', text: 'Link2', file: filePath },
+//       ]);
+//       expect(fs.readFile).toHaveBeenCalledWith(path.resolve(filePath), 'utf-8');
 //     });
 //   });
 
-//   // Puedes agregar más casos de prueba según sea necesario
+//   it('debería devolver los enlaces con validación cuando validate es true', () => {
+//     const filePath = '/ruta/al/archivo.md';
+//     const fileContent = '[Link1](http://example.com)\n[Link2](http://example2.com)';
+//     const validatedLinks = [
+//       { href: 'http://example.com', text: 'Link1', file: filePath, status: 200, ok: 'ok' },
+//       { href: 'http://example2.com', text: 'Link2', file: filePath, status: 404, ok: 'fail' },
+//     ];
+
+//     // Establecer la implementación manual para fs.promises.readFile y validateLinks
+//     fs.readFile = jest.fn().mockResolvedValue(fileContent);
+//     validateLinks.mockResolvedValue(validatedLinks);
+
+//     return mdLinks(filePath, true).then(result => {
+//       expect(result).toEqual(validatedLinks);
+//       expect(fs.readFile).toHaveBeenCalledWith(path.resolve(filePath), 'utf-8');
+//       expect(validateLinks).toHaveBeenCalledWith([
+//         { href: 'http://example.com', text: 'Link1', file: filePath },
+//         { href: 'http://example2.com', text: 'Link2', file: filePath },
+//       ]);
+//     });
+//   });
+
+//   // Otros casos de prueba...
+
 // });
 
-
-
-
-// describe('validateLink', () => {
-//   it('should validate a link and return the result', () => {
-//     // Datos de prueba
-//     const link = { href: 'http://example.com', text: 'Link1', file: '/ruta/del/archivo.md' };
-
-//     // Configura el mock para simular una solicitud HEAD exitosa
-//     mockAxios.onHead(link.href).reply(200);
-
-//     // Llama a la función validateLink
-//     return validateLink(link).then(result => {
-//       // Verifica que el resultado tenga las propiedades adecuadas
-//       expect(result).toHaveProperty('href', 'http://example.com');
-//       expect(result).toHaveProperty('text', 'Link1');
-//       expect(result).toHaveProperty('file', '/ruta/del/archivo.md');
-//       expect(result).toHaveProperty('status', 200);
-//       expect(result).toHaveProperty('ok', 'ok');
-//     });
-//   });
-
-//   it('should handle a failed HEAD request and return the result', () => {
-//     // Datos de prueba
-//     const link = { href: 'http://nonexistent.com', text: 'Link2', file: '/ruta/del/archivo.md' };
-
-//     // Configura el mock para simular una solicitud HEAD fallida
-//     mockAxios.onHead(link.href).reply(404);
-
-//     // Llama a la función validateLink
-//     return validateLink(link).then(result => {
-//       // Verifica que el resultado tenga las propiedades adecuadas
-//       expect(result).toHaveProperty('href', 'http://nonexistent.com');
-//       expect(result).toHaveProperty('text', 'Link2');
-//       expect(result).toHaveProperty('file', '/ruta/del/archivo.md');
-//       expect(result).toHaveProperty('status', 404);
-//       expect(result).toHaveProperty('ok', 'fail');
-//     });
-//   });
-
-//   
-// });

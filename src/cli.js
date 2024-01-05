@@ -1,4 +1,4 @@
-
+#!/usr/bin/env node
 const { mdLinks, stats, validateLinks, statsWithValidate } = require('./functions');
 const filePath = 'README.md';
 const validate = process.argv.includes("--validate");
